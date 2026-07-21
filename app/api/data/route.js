@@ -5,7 +5,10 @@ export const runtime = "nodejs";
 const KEY = "daily_todo_data_v1";
 
 function getRedis() {
-  return Redis.fromEnv();
+  return new Redis({
+    url: process.env.REDIS_KV_REST_API_URL,
+    token: process.env.REDIS_KV_REST_API_TOKEN,
+  });
 }
 
 export async function GET() {
