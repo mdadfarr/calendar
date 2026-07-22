@@ -134,24 +134,25 @@ h1 span{color:var(--lvl3);}
   padding:0 8px;
 }
 .time-pair:focus-within{border-color:var(--lvl3);}
-.time-box{
-  width:22px;
+.add-row input.time-box{
+  width:26px;
+  flex:none;
   background:transparent;
   border:none;
   color:var(--ink) !important;
   -webkit-text-fill-color:var(--ink);
   caret-color:var(--ink);
   text-align:center;
-  padding:10px 0;
+  padding:0;
   font-family:'JetBrains Mono',monospace;
-  font-size:13px;
+  font-size:14px;
 }
-.time-box::placeholder{
+.add-row input.time-box::placeholder{
   color:var(--ink-faint);
   -webkit-text-fill-color:var(--ink-faint);
   opacity:1;
 }
-.time-box:focus{outline:none;}
+.add-row input.time-box:focus{outline:none;border:none;}
 .time-colon{
   color:var(--ink-faint);
   font-family:'JetBrains Mono',monospace;
