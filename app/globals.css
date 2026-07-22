@@ -123,19 +123,34 @@ h1 span{color:var(--lvl3);}
   font-size:14px;
 }
 .add-row input:focus{outline:none;border-color:var(--lvl3);}
-.add-row .time-input{
+.time-pair{
   flex:none;
-  width:110px;
+  display:flex;
+  align-items:center;
+  gap:3px;
   background:var(--panel-2);
   border:1px solid var(--line);
-  color:var(--ink-dim);
-  padding:10px 8px;
   border-radius:8px;
+  padding:0 8px;
+}
+.time-pair:focus-within{border-color:var(--lvl3);}
+.time-box{
+  width:22px;
+  background:transparent;
+  border:none;
+  color:var(--ink);
+  text-align:center;
+  padding:10px 0;
   font-family:'JetBrains Mono',monospace;
   font-size:13px;
-  color-scheme:dark;
 }
-.add-row .time-input:focus{outline:none;border-color:var(--lvl3);}
+.time-box::placeholder{color:var(--ink-faint);}
+.time-box:focus{outline:none;}
+.time-colon{
+  color:var(--ink-faint);
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+}
 .time-slot{
   flex-shrink:0;
   font-family:'JetBrains Mono',monospace;

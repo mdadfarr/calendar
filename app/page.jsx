@@ -62,8 +62,10 @@ export default function Page() {
     return d;
   });
   const [taskInput, setTaskInput] = useState("");
-  const [taskStart, setTaskStart] = useState("");
-  const [taskEnd, setTaskEnd] = useState("");
+  const [taskStartH, setTaskStartH] = useState("");
+  const [taskStartM, setTaskStartM] = useState("");
+  const [taskEndH, setTaskEndH] = useState("");
+  const [taskEndM, setTaskEndM] = useState("");
   const [tooltip, setTooltip] = useState(null);
 
   useEffect(() => {
@@ -90,6 +92,18 @@ export default function Page() {
     return list.filter((t) => t.done).length;
   }
 
+  function pad2(v) {
+    const n = parseInt(v, 10);
+    if (isNaN(n)) return "00";
+    return String(n).padStart(2, "0");
+  }
+
+  function buildTime(h, m) {
+    // only produce a time if the user actually typed something in either field
+    if (h.trim() === "" && m.trim() === "") return null;
+    return `${pad2(h)}:${pad2(m)}`;
+  }
+
   function addTask() {
     const text = taskInput.trim();
     if (!text) return;
@@ -101,22 +115,21 @@ export default function Page() {
         id: makeId(),
         text,
         done: false,
-        startTime: taskStart || null,
-        endTime: taskEnd || null,
+        startTime: buildTime(taskStartH, taskStartM),
+        endTime: buildTime(taskEndH, taskEndM),
       },
     ];
     persist(newData);
     setTaskInput("");
-    setTaskStart("");
-    setTaskEnd("");
+    setTaskStartH("");
+    setTaskStartM("");
+    setTaskEndH("");
+    setTaskEndM("");
   }
 
   function formatTime(t) {
     if (!t) return "";
-    const [h, m] = t.split(":").map(Number);
-    const d = new Date();
-    d.setHours(h, m, 0, 0);
-    return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+    return t; // already stored as HH:MM, 24h
   }
 
   function toggleTask(key, id) {
@@ -237,20 +250,48 @@ export default function Page() {
               if (e.key === "Enter") addTask();
             }}
           />
-          <input
-            type="time"
-            className="time-input"
-            value={taskStart}
-            onChange={(e) => setTaskStart(e.target.value)}
-            title="Start time (optional)"
-          />
-          <input
-            type="time"
-            className="time-input"
-            value={taskEnd}
-            onChange={(e) => setTaskEnd(e.target.value)}
-            title="End time (optional)"
-          />
+          <div className="time-pair" title="Start time (optional)">
+            <input
+              type="text"
+              inputMode="numeric"
+              className="time-box"
+              placeholder="00"
+              maxLength={2}
+              value={taskStartH}
+              onChange={(e) => setTaskStartH(e.target.value.replace(/\D/g, "").slice(0, 2))}
+            />
+            <span className="time-colon">:</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              className="time-box"
+              placeholder="00"
+              maxLength={2}
+              value={taskStartM}
+              onChange={(e) => setTaskStartM(e.target.value.replace(/\D/g, "").slice(0, 2))}
+            />
+          </div>
+          <div className="time-pair" title="End time (optional)">
+            <input
+              type="text"
+              inputMode="numeric"
+              className="time-box"
+              placeholder="00"
+              maxLength={2}
+              value={taskEndH}
+              onChange={(e) => setTaskEndH(e.target.value.replace(/\D/g, "").slice(0, 2))}
+            />
+            <span className="time-colon">:</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              className="time-box"
+              placeholder="00"
+              maxLength={2}
+              value={taskEndM}
+              onChange={(e) => setTaskEndM(e.target.value.replace(/\D/g, "").slice(0, 2))}
+            />
+          </div>
           <button onClick={addTask}>Add</button>
         </div>
         <ul className="tasks">
