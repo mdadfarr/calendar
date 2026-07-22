@@ -128,8 +128,12 @@ export default function Page() {
   }
 
   function formatTime(t) {
-    if (!t) return "";
-    return t; // already stored as HH:MM, 24h
+    if (!t) return null;
+    const [h, m] = t.split(":").map(Number);
+    const ampm = h >= 12 ? "PM" : "AM";
+    let h12 = h % 12;
+    if (h12 === 0) h12 = 12;
+    return { main: `${h12}:${String(m).padStart(2, "0")}`, ampm };
   }
 
   function toggleTask(key, id) {
@@ -304,9 +308,19 @@ export default function Page() {
               <div className="text">{task.text}</div>
               {(task.startTime || task.endTime) && (
                 <div className="time-slot">
-                  {task.startTime ? formatTime(task.startTime) : ""}
-                  {task.startTime && task.endTime ? " – " : ""}
-                  {task.endTime ? formatTime(task.endTime) : ""}
+                  {task.startTime && (
+                    <>
+                      <span>{formatTime(task.startTime).main}</span>
+                      <span className="time-meridiem">{formatTime(task.startTime).ampm}</span>
+                    </>
+                  )}
+                  {task.startTime && task.endTime ? <span>&nbsp;–&nbsp;</span> : null}
+                  {task.endTime && (
+                    <>
+                      <span>{formatTime(task.endTime).main}</span>
+                      <span className="time-meridiem">{formatTime(task.endTime).ampm}</span>
+                    </>
+                  )}
                 </div>
               )}
               <button className="del" onClick={() => deleteTask(selKey, task.id)}>
