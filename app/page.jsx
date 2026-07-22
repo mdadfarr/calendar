@@ -62,6 +62,8 @@ export default function Page() {
     return d;
   });
   const [taskInput, setTaskInput] = useState("");
+  const [taskStart, setTaskStart] = useState("");
+  const [taskEnd, setTaskEnd] = useState("");
   const [tooltip, setTooltip] = useState(null);
 
   useEffect(() => {
@@ -93,9 +95,28 @@ export default function Page() {
     if (!text) return;
     const key = fmt(selectedDate);
     const newData = { ...data };
-    newData[key] = [...(newData[key] || []), { id: makeId(), text, done: false }];
+    newData[key] = [
+      ...(newData[key] || []),
+      {
+        id: makeId(),
+        text,
+        done: false,
+        startTime: taskStart || null,
+        endTime: taskEnd || null,
+      },
+    ];
     persist(newData);
     setTaskInput("");
+    setTaskStart("");
+    setTaskEnd("");
+  }
+
+  function formatTime(t) {
+    if (!t) return "";
+    const [h, m] = t.split(":").map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
   }
 
   function toggleTask(key, id) {
@@ -216,6 +237,20 @@ export default function Page() {
               if (e.key === "Enter") addTask();
             }}
           />
+          <input
+            type="time"
+            className="time-input"
+            value={taskStart}
+            onChange={(e) => setTaskStart(e.target.value)}
+            title="Start time (optional)"
+          />
+          <input
+            type="time"
+            className="time-input"
+            value={taskEnd}
+            onChange={(e) => setTaskEnd(e.target.value)}
+            title="End time (optional)"
+          />
           <button onClick={addTask}>Add</button>
         </div>
         <ul className="tasks">
@@ -226,6 +261,13 @@ export default function Page() {
                 {task.done ? "\u2713" : ""}
               </div>
               <div className="text">{task.text}</div>
+              {(task.startTime || task.endTime) && (
+                <div className="time-slot">
+                  {task.startTime ? formatTime(task.startTime) : ""}
+                  {task.startTime && task.endTime ? " – " : ""}
+                  {task.endTime ? formatTime(task.endTime) : ""}
+                </div>
+              )}
               <button className="del" onClick={() => deleteTask(selKey, task.id)}>
                 &times;
               </button>
